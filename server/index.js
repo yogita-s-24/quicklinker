@@ -32,22 +32,21 @@ app.post("/api/link", async (req, res) => {
   try {
     const saveLink = await link.save();
 
-    return res.json({
-        success: true,
-        data: saveLink,
-        message: "Link saved successfully.",
-      });
-
     // return res.json({
-    //   success: true,
-    //   data: {
-    //     url: saveLink.url,
-    //     slug: saveLink.slug,
-    //     link: `${process.env.BASE_URL} / ${saveLink.slug}`,
-    //   },
-    //   message: "Link saved successfully.",
-    // });
-    
+    //     success: true,
+    //     data: saveLink,
+    //     message: "Link saved successfully.",
+    //   });
+
+    return res.json({
+      success: true,
+      data: {
+        url: saveLink.url,
+        slug: saveLink.slug,
+        link: `${process.env.BASE_URL} / ${saveLink.slug}`,
+      },
+      message: "Link saved successfully.",
+    });
   } catch (err) {
     res.json({
       success: false,
@@ -57,6 +56,20 @@ app.post("/api/link", async (req, res) => {
 });
 
 //get api
+app.get("/api/:slug", async (req, res) => {
+  const { slug } = req.params;
+  const link = await Link.findOne({ slug: slug });
+
+  await Link.updateOne({ slug: slug }, { $set: { clicks: link.clicks + 1 } });
+
+  if(!link){
+      return res.json({
+        success:false,
+        message:"Link not found"
+      })
+  }
+  res.redirect(link.url);
+});
 
 const PORT = process.env.PORT || 5000;
 
