@@ -24,7 +24,7 @@ function Login() {
         </div>
 
 
-        <button id="button">Submit</button>
+        <button id="button">Login</button>
         <a className="forgotLink" href="#">Forgot your password?</a>
       </form>
 
