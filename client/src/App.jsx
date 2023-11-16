@@ -1,10 +1,10 @@
 import React from 'react'
-// import Home from './views/Home/Home'
+import Home from './views/Home/Home'
 
 function App() {
   return (
     <div>
-       {/* <Home/> */}
+       <Home/>
     </div>
   )
 }

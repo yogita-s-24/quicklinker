@@ -89,14 +89,12 @@ app.post("/links", async (req, res) => {
   });
 
   try {
-    const saveLink = await link.save();
+    const savedLink = await link.save();
 
     return res.json({
       success: true,
       data: {
-        url: saveLink.url,
-        slug: saveLink.slug,
-        link: `${process.env.BASE_URL}/ ${saveLink.slug}`,
+        shortUrl: `${process.env.BASE_URL}/ ${savedLink.slug}`,
       },
       message: "Link saved successfully.",
     });
