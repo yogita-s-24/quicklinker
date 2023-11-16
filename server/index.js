@@ -46,6 +46,36 @@ app.post("/api/signup", async (req, res) => {
   }
 });
 
+//Post/login
+app.post("/login", async (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.json({
+      success: false,
+      message: "Please provide email and password",
+    });
+  }
+
+  const user = await User.findOne({
+    email: email,
+    password: password,
+  });
+
+  if (user) {
+    return res.json({
+      success: true,
+      data: user,
+      message: "Login successful",
+    });
+  } else {
+    return res.json({
+      success: false,
+      message: "Invalid credentials",
+    });
+  }
+});
+
 //post api
 
 app.post("/links", async (req, res) => {
