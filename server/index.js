@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
+import User from "./models/User.js";
 import Link from "./models/Link.js";
 
 const app = express();
@@ -17,9 +18,37 @@ const connectionDB = async () => {
 };
 connectionDB();
 
+//Post/signup
+app.post("/api/signup", async (req, res) => {
+  const { name, email, password, mobile, gender } = req.body;
+
+  //instance
+  const user = new User({
+    name: name,
+    email: email,
+    password: password,
+    mobile: mobile,
+    gender: gender,
+  });
+
+  try {
+    const savedUser = await user.save();
+    res.json({
+      success: true,
+      data: savedUser,
+      message: "SignUp Successful",
+    });
+  } catch (err) {
+    res.json({
+      success: false,
+      message:"Error to SignUp",
+    });
+  }
+});
+
 //post api
 
-app.post("/api/link", async (req, res) => {
+app.post("/links", async (req, res) => {
   const { url, slug } = req.body;
 
   const randomslug = Math.random().toString(36).substring(2, 7);
@@ -32,18 +61,12 @@ app.post("/api/link", async (req, res) => {
   try {
     const saveLink = await link.save();
 
-    // return res.json({
-    //     success: true,
-    //     data: saveLink,
-    //     message: "Link saved successfully.",
-    //   });
-
     return res.json({
       success: true,
       data: {
         url: saveLink.url,
         slug: saveLink.slug,
-        link: `${process.env.BASE_URL} / ${saveLink.slug}`,
+        link: `${process.env.BASE_URL}/ ${saveLink.slug}`,
       },
       message: "Link saved successfully.",
     });
@@ -62,11 +85,11 @@ app.get("/api/:slug", async (req, res) => {
 
   await Link.updateOne({ slug: slug }, { $set: { clicks: link.clicks + 1 } });
 
-  if(!link){
-      return res.json({
-        success:false,
-        message:"Link not found"
-      })
+  if (!link) {
+    return res.json({
+      success: false,
+      message: "Link not found",
+    });
   }
   res.redirect(link.url);
 });
