@@ -1,8 +1,9 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useRef } from 'react'
 import Navbar from '../../components/Navbar/Navbar'
 import axios from 'axios'
 import './Home.css'
 import copyimg from './images/copy.png'
+
 
 function Home() {
   const [url, setUrl] = useState('');
@@ -10,27 +11,28 @@ function Home() {
   const [shortUrl, setShortUrl] = useState('');
 
   const generateLink = async () => {
-    try {
+  
       const response = await axios.post('/api/links', {
         url: url,
         slug: slug,
       });
-  
       setShortUrl(response?.data?.data?.shortUrl);
-    } catch (error) {
       console.error('Error generating short URL:', error);
       // Handle the error, e.g., show a user-friendly message
-    }
   };
 
+  //useRef Hook
+  const copyUrlRef = useRef(null);
 
-
+  const copyUrlToClipBoard = useCallback(() => {
+    copyUrlRef.current?.select();
+    window.navigator.clipboard.writeText(shortUrl);
+  
+  }, [shortUrl]);
 
   return (
     <div>
       <Navbar />
-      {/* <h1 className='text-center mt-3'>Quick Linker</h1> */}
-
       <div className='container d-flex justify-content-around mt-5'>
         <div>
           {/* <h3>Link Generator</h3> */}
@@ -61,20 +63,25 @@ function Home() {
                   />
                 </div>
                 <div class="input-container">
-                  <input type="text" readOnly value={shortUrl} placeholder='Short Url'  />
+                  <input type="text" 
+                  readOnly value={shortUrl}
+                   placeholder='Short Url' 
+                   ref={copyUrlRef} />
+
                   <span>
-                    <img src={copyimg} 
-                    alt="png" 
-                    className="h-25" 
-    
+                    <img src={copyimg}
+                      alt="png"
+                      className="h-25"
+                      onClick={copyUrlToClipBoard}
                     />
                   </span>
+
                 </div>
                 <button
-                 class="submit" 
-                 type="button"
-                 onClick={generateLink}
-                 >
+                  class="submit"
+                  type="button"
+                  onClick={generateLink}
+                >
                   Do Magic
                 </button>
               </form>
