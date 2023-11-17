@@ -1,24 +1,26 @@
-import React, { useState, useCallback, useRef } from 'react'
+import React, { useState, useCallback, useRef, useEffect } from 'react'
 import Navbar from '../../components/Navbar/Navbar'
 import axios from 'axios'
 import './Home.css'
 import copyimg from './images/copy.png'
+import LinkCard from './../../components/LinkCard/LinkCard'
 
 
 function Home() {
   const [url, setUrl] = useState('');
   const [slug, setSlug] = useState('');
   const [shortUrl, setShortUrl] = useState('');
+  const [links, setLinks] = useState([]);
 
   const generateLink = async () => {
-  
-      const response = await axios.post('/api/links', {
-        url: url,
-        slug: slug,
-      });
-      setShortUrl(response?.data?.data?.shortUrl);
-      console.error('Error generating short URL:', error);
-      // Handle the error, e.g., show a user-friendly message
+
+    const response = await axios.post('/api/links', {
+      url: url,
+      slug: slug,
+    });
+    setShortUrl(response?.data?.data?.shortUrl);
+    console.error('Error generating short URL:', error);
+    // Handle the error, e.g., show a user-friendly message
   };
 
   //useRef Hook
@@ -27,73 +29,89 @@ function Home() {
   const copyUrlToClipBoard = useCallback(() => {
     copyUrlRef.current?.select();
     window.navigator.clipboard.writeText(shortUrl);
-  
+
   }, [shortUrl]);
 
+  const loadLink = async () => {
+    const response = await axios.get('/fetch/links');
+    console.log(response?.data?.data);
+    setLinks(response?.data?.data)
+  }
+
+  useEffect(() => {
+    loadLink();
+  }, [])
+
   return (
-    <div>
+    <>
       <Navbar />
-      <div className='container d-flex justify-content-around mt-5'>
+      <h1 className='text-center mt-3'>Quick Linker🔗</h1>
+      <div className='d-flex flex-wrap align-content-center justify-content-evenly mt-5'>
         <div>
-          {/* <h3>Link Generator</h3> */}
-          <div className="d-flex flex-wrap mt-5 align-content-center justify-content-evenly">
-            <div>
-              <form class="form">
-                <p class="form-title">Generate Short Url Here</p>
-                <div class="input-container">
-                  <input
-                    placeholder="Enter Url Here"
-                    type="text"
-                    required
-                    value={url}
-                    onChange={(e) => {
-                      setUrl(e.target.value);
-                    }}
-                  />
-                </div>
-                <div class="input-container">
-                  <input
-                    placeholder="Enter Slug Here (optional)"
-                    type="text"
-                    required
-                    value={slug}
-                    onChange={(e) => {
-                      setSlug(e.target.value);
-                    }}
-                  />
-                </div>
-                <div class="input-container">
-                  <input type="text" 
-                  readOnly value={shortUrl}
-                   placeholder='Short Url' 
-                   ref={copyUrlRef} />
-
-                  <span>
-                    <img src={copyimg}
-                      alt="png"
-                      className="h-25"
-                      onClick={copyUrlToClipBoard}
-                    />
-                  </span>
-
-                </div>
-                <button
-                  class="submit"
-                  type="button"
-                  onClick={generateLink}
-                >
-                  Do Magic
-                </button>
-              </form>
+          <form className="form">
+            <p className="form-title">Generate Short Url Here</p>
+            <div className="input-container">
+              <input
+                placeholder="Enter Url Here"
+                type="text"
+                required
+                value={url}
+                onChange={(e) => {
+                  setUrl(e.target.value);
+                }}
+              />
             </div>
-          </div>
+            <div className="input-container">
+              <input
+                placeholder="Enter Slug Here (optional)"
+                type="text"
+                required
+                value={slug}
+                onChange={(e) => {
+                  setSlug(e.target.value);
+                }}
+              />
+            </div>
+            <div className="input-container">
+              <input type="text"
+                readOnly value={shortUrl}
+                placeholder='Short Url'
+                ref={copyUrlRef} />
+              <span>
+                <img src={copyimg}
+                  alt="png"
+                  className="h-25"
+                  onClick={copyUrlToClipBoard}
+                />
+              </span>
+
+            </div>
+            <button
+              // class="submit"
+              type="button"
+              onClick={generateLink}
+              className='btn w-100 text-light'
+              style={{ backgroundColor: '#6540a5' }}
+            >
+              Do Magic
+            </button>
+          </form>
+
         </div>
 
-        <div>
-          <h3>All Links</h3>
+        <div className='link-container'>
+          {
+            links?.map((linkObj, i) => {
+              const { url, slug, clicks } = linkObj;
+
+              return (<LinkCard url={url} slug={slug} clicks={clicks} key={i}/>)
+
+            })
+          }
         </div>
       </div>
-    </div>
+    </>
+
   )
 }
 
