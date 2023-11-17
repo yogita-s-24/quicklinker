@@ -47,7 +47,7 @@ app.post("/api/signup", async (req, res) => {
 });
 
 //Post/login
-app.post("/login", async (req, res) => {
+app.post("/api/login", async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -78,11 +78,9 @@ app.post("/login", async (req, res) => {
 
 //post api
 
-app.post("/links", async (req, res) => {
+app.post("/api/links", async (req, res) => {
   const { url, slug } = req.body;
-
   const randomslug = Math.random().toString(36).substring(2, 7);
-
   const link = new Link({
     url: url,
     slug: slug || randomslug,
@@ -90,7 +88,6 @@ app.post("/links", async (req, res) => {
 
   try {
     const savedLink = await link.save();
-
     return res.json({
       success: true,
       data: {

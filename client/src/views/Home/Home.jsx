@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useCallback } from 'react'
 import Navbar from '../../components/Navbar/Navbar'
+import axios from 'axios'
 import './Home.css'
 import copyimg from './images/copy.png'
 
@@ -7,6 +8,23 @@ function Home() {
   const [url, setUrl] = useState('');
   const [slug, setSlug] = useState('');
   const [shortUrl, setShortUrl] = useState('');
+
+  const generateLink = async () => {
+    try {
+      const response = await axios.post('/api/links', {
+        url: url,
+        slug: slug,
+      });
+  
+      setShortUrl(response?.data?.data?.shortUrl);
+    } catch (error) {
+      console.error('Error generating short URL:', error);
+      // Handle the error, e.g., show a user-friendly message
+    }
+  };
+
+
+
 
   return (
     <div>
@@ -43,12 +61,20 @@ function Home() {
                   />
                 </div>
                 <div class="input-container">
-                  <input type="text" readOnly value={shortUrl} placeholder='Short Url' />
+                  <input type="text" readOnly value={shortUrl} placeholder='Short Url'  />
                   <span>
-                    <img src={copyimg} alt="png" className="h-25" />
+                    <img src={copyimg} 
+                    alt="png" 
+                    className="h-25" 
+    
+                    />
                   </span>
                 </div>
-                <button class="submit" type="button">
+                <button
+                 class="submit" 
+                 type="button"
+                 onClick={generateLink}
+                 >
                   Do Magic
                 </button>
               </form>
