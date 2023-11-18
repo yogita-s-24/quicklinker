@@ -3,3 +3,15 @@
     width:450px;
     box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
 }
+
+@media screen and (max-width:768px){
+    .main-container{
+        background-color:#fff;
+        width:330px;
+        box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    .url-text{
+        font-size: 13px !important;
+    }
+}

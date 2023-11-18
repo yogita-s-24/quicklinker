@@ -79,6 +79,7 @@
       height: 415px;
       margin-bottom: 50px;
       overflow-y: scroll;
+
     }
     
     /* Hide scrollbar on WebKit browsers */
@@ -86,3 +87,11 @@
       width: 0;
       background: transparent; /* optional: makes scrollbar space transparent */
     }
+
+    @media screen and (max-width:768px){
+      .link-container{
+        margin-top: 50px !important;
+      }
+  
+    
+  }

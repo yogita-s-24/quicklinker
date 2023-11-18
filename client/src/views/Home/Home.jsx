@@ -5,6 +5,7 @@ import './Home.css'
 import copyimg from './images/copy.png'
 import LinkCard from './../../components/LinkCard/LinkCard'
 import Footer from './../../components/Footer/Footer'
+import showToast from 'crunchy-toast';
 
 
 function Home() {
@@ -25,12 +26,23 @@ function Home() {
   };
 
   //useRef Hook
-  const copyUrlRef = useRef(null);
+  // const copyUrlRef = useRef(null);
+
+  // const copyUrlToClipBoard = useCallback(() => {
+  //   copyUrlRef.current?.select();
+  //   window.navigator.clipboard.writeText(shortUrl);
+
+  // }, [shortUrl]);
+
+const copyUrlRef = useRef(null);
 
   const copyUrlToClipBoard = useCallback(() => {
-    copyUrlRef.current?.select();
-    window.navigator.clipboard.writeText(shortUrl);
-
+    if (shortUrl) {
+      copyUrlRef.current?.select(); // Select the text inside the input element
+      if (window.navigator.clipboard.writeText(shortUrl)) {
+        showToast("Link Copied Successfully.", "success", 6000);
+      }
+    }
   }, [shortUrl]);
 
   const loadLink = async () => {
@@ -46,7 +58,8 @@ function Home() {
   return (
     <>
       <Navbar />
-      <h1 className='text-center mt-3'>Quick Linker🔗</h1>
+      <h4 className='text-center mt-3'>Quick Linker🔗</h4>
+      <h5 className='text-center mt-3'>Where Long URLs Meet Their Shortened Destiny</h5>
       <div className='d-flex flex-wrap align-content-center justify-content-evenly mt-5'>
         <div>
           <form className="form">
