@@ -4,6 +4,7 @@ import axios from 'axios'
 import './Home.css'
 import copyimg from './images/copy.png'
 import LinkCard from './../../components/LinkCard/LinkCard'
+import Footer from './../../components/Footer/Footer'
 
 
 function Home() {
@@ -110,6 +111,7 @@ function Home() {
           }
         </div>
       </div>
+      <Footer/>
     </>
 
   )

@@ -1,0 +1,16 @@
+.bg-color {
+  background-color: #d5c8ea;
+}
+
+.git-profile {
+  color: black;
+  /* font-weight: bold; */
+  text-decoration: none;
+}
+
+
+.github-image{
+    height: 30px;
+    /* border-radius: 50%; */
+    padding: 2px;
+}
