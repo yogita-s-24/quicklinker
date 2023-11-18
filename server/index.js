@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import express from "express";
 import dotenv from "dotenv";
+import path from 'path';
 
 dotenv.config();
 
@@ -9,6 +10,8 @@ import Link from "./models/Link.js";
 
 const app = express();
 app.use(express.json());
+
+const __dirname = path.resolve();
 
 const connectionDB = async () => {
   const conn = await mongoose.connect(process.env.MONGODB_URI);
@@ -131,6 +134,14 @@ app.get('/fetch/links', async(req,res)=>{
 })
 
 const PORT = process.env.PORT || 5000;
+
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '..', 'client', 'dist')));
+
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'client', 'dist', 'index.html'))
+  });
+}
 
 app.listen(PORT, () => {
   console.log(`Server is running on ${PORT}`);
